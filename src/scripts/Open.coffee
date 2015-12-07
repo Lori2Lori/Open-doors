@@ -13,7 +13,7 @@ FlatButton            = require 'material-ui/lib/flat-button'
 module.exports = class Open extends React.Component
   render: ->
     <div>
-      <h2>Open doors</h2>
+      <h2>Add doors</h2>
 
       <Dialog
         title = "Door is opened"
@@ -33,7 +33,7 @@ module.exports = class Open extends React.Component
         >
         { if @props.doors is null
             <h4>
-              Welcome! Add a door to get started
+              Welcome! First add a door
             </h4>
           else
             for key, door of @props.doors

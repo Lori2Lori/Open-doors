@@ -1,6 +1,5 @@
 React      = require 'react'
 RDOM       = require 'react-dom'
-Users      = require './Users'
 Doors      = require './Doors'
 History    = require './History'
 Open       = require './Open'
@@ -16,7 +15,6 @@ Tab        = require 'material-ui/lib/tabs/tab'
 # Database
 Firebase   = require 'firebase'
 database   = new Firebase 'https://clay-app.firebaseio.com/'
-users      = database.child 'users'
 doors      = database.child 'doors'
 history    = database.child 'history'
 
@@ -40,17 +38,7 @@ class Main extends React.Component
             doors = { @state.doors }
             onNewDoor = { (door) => doors.push door }
           />
-          <Users
-            users = { @state.users }
-            onNewUser = { (user) =>
-              database.createUser user, (error, userData) =>
-                if error
-                  @setState error: yes
-                else
-                  # write userData.uid and email to database
-                  users.push email: user.email, uid: userData.uid
-            }
-          />
+
         </Tab>
 
         <Tab label="Open doors" >
@@ -71,11 +59,10 @@ class Main extends React.Component
     </div>
 
   constructor: ->
-    @state = users: {}, doors: {}, history: {}
+    @state = doors: {}, history: {}
 
   componentWillMount: ->
-    users.on 'value', (snapshot) =>
-      @setState users: snapshot.val()
+
     doors.on 'value', (snapshot) =>
       @setState doors: snapshot.val()
 

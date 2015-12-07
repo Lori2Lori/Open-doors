@@ -18,10 +18,9 @@ module.exports = class History extends React.Component
               do =>
                 uid = key
                 date = moment(event.time)
-                description = "#{date.format("YYYY/MM/DD, h:mm a")}, #{event.user} #{event.type} #{event.door?.description or "DOOR DELETED"}"
+                description = "#{date.format("YYYY/MM/DD, h:mm a")}, #{event.type} #{event.door?.description or "DOOR DELETED"}"
                 <ListItem key = { uid }
                   primaryText = { description }
-                  leftAvatar  = { <Avatar src="http://www.material-ui.com/images/uxceo-128.jpg" /> }
                 />
         }
       </List>
