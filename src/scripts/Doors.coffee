@@ -41,10 +41,6 @@ module.exports = class Doors extends React.Component
         <TextField
         ref="description"
         floatingLabelText="description"
-        errorText={this.state.errorText}
-        onChange={this._handleErrorInputChange}/>
-        <h4> Upload door picture </h4>
-        <input type="file"
         />
       </Dialog>
 
