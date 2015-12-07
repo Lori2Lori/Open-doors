@@ -33,10 +33,15 @@ class Main extends React.Component
       </Dialog>
 
       <Tabs>
-        <Tab label="Options" >
+        <Tab label="Manage doors" >
           <Doors
             doors = { @state.doors }
             onNewDoor = { (door) => doors.push door }
+            onClear = { (name) =>
+              doors
+                .child name
+                .remove()
+            }
           />
 
         </Tab>

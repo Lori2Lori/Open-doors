@@ -3,6 +3,7 @@ RaisedButton          = require 'material-ui/lib/raised-button'
 Card                  = require 'material-ui/lib/card/card'
 CardTitle             = require 'material-ui/lib/card/card-title'
 CardMedia             = require 'material-ui/lib/card/card-media'
+CardActions           = require 'material-ui/lib/card/card-actions'
 Dialog                = require 'material-ui/lib/dialog'
 TextField             = require 'material-ui/lib/text-field'
 GridList              = require 'material-ui/lib/grid-list/grid-list'
@@ -12,7 +13,7 @@ FlatButton            = require 'material-ui/lib/flat-button'
 module.exports = class Doors extends React.Component
   render: ->
     <div>
-      <h2>Manage doors</h2>
+      <h2>Add doors</h2>
 
       <RaisedButton
         style={margin: 10}
@@ -39,8 +40,8 @@ module.exports = class Doors extends React.Component
         ]}
       >
         <TextField
-        ref="description"
-        floatingLabelText="description"
+          ref="description"
+          floatingLabelText="description"
         />
       </Dialog>
 
@@ -66,6 +67,12 @@ module.exports = class Doors extends React.Component
                     }
                   >
                   </CardMedia>
+                  <CardActions>
+                    <FlatButton
+                      label="Delete"
+                      onClick = { => @props.onClear name }
+                    />
+                  </CardActions>
                 </Card>
         }
       </GridList>
