@@ -3,6 +3,8 @@ RDOM       = require 'react-dom'
 Doors      = require './Doors'
 History    = require './History'
 Open       = require './Open'
+Login      = require './Login'
+Register   = require './Register'
 
 # Material-ui styles
 Dialog     = require 'material-ui/lib/dialog'
@@ -20,51 +22,76 @@ history    = database.child 'history'
 
 class Main extends React.Component
   render: ->
-    <div>
-      <Dialog
-        title="Please provide correct email and password"
-        open={@state.error}
-        actions = {[
-          <FlatButton label="Close"
-            onClick = { => @setState error: no }
-          />
-        ]}
-      >
-      </Dialog>
+    <div className="app">
 
-      <Tabs>
-        <Tab label="Manage doors" >
-          <Doors
-            doors = { @state.doors }
-            onNewDoor = { (door) => doors.push door }
-            onClear = { (name) =>
-              doors
-                .child name
-                .remove()
-            }
-          />
+      {
+        if not @state.user?
+          <div>
+            <Register
+              onNewUser = { (credentials) =>
+                database.createUser credentials, (error, userData) =>
+                  if error
+                    return console.error "Error creating user:", error
 
-        </Tab>
+                  console.log "Successfully created user account with uid:", userData.uid
+              }
+            />
+            <Login
+              onLogin = { (credentials) =>
+                database.authWithPassword credentials, (error, authData) =>
+                  if error
+                    return console.error "Login error", error
+                  @setState user: authData.uid
+              }
+            />
+          </div>
+        else
 
-        <Tab label="Open doors" >
-          <Open
-            doors = { @state.doors }
-            onNewDoor = { (door) => doors.push door }
-            onDoorOpen = { (event) =>
-              history.push event }
-          />
-        </Tab>
+          <Dialog
+            title="Please provide correct email and password"
+            open={@state.error}
+            actions = {[
+              <FlatButton label="Close"
+                onClick = { => @setState error: no }
+              />
+            ]}
+          >
+          </Dialog>
 
-        <Tab label="History" >
-          <History
-            history = {@state.history}
-          />
-        </Tab>
-      </Tabs>
+          <Tabs>
+            <Tab label="Manage doors" >
+              <Doors
+                doors = { @state.doors }
+                onNewDoor = { (door) => doors.push door }
+                onClear = { (name) =>
+                  doors
+                    .child name
+                    .remove()
+                }
+              />
+
+            </Tab>
+
+            <Tab label="Open doors" >
+              <Open
+                doors = { @state.doors }
+                onNewDoor = { (door) => doors.push door }
+                onDoorOpen = { (event) =>
+                  history.push event }
+              />
+            </Tab>
+
+            <Tab label="History" >
+              <History
+                history = {@state.history}
+              />
+            </Tab>
+          </Tabs>
+      }
     </div>
 
   constructor: ->
-    @state = doors: {}, history: {}
+    @state = doors: {}, history: {}, user: null
 
   componentWillMount: ->
 
