@@ -77,13 +77,13 @@ class Main extends React.Component
       # Take a value from history snapshot
       events = snapshot.val()
       # Request for doors once and wait for the answer
-      doors.once 'value', (snapshot) =>
+      doors.on 'value', (snapshot) =>
         # Take value from items snapshot
         items = snapshot.val()
         # For each event, take door description and put it into door property of event
         for uid, event of events
           door = items[event.door]
-          event.door = door
+          event.doorObject = door
         # Set state of history to the current events, with new door property.
         @setState history: events
         #Each door property in event has the description from doors array.
