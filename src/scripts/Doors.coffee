@@ -31,7 +31,7 @@ module.exports = class Doors extends React.Component
             style = {color: "green"}
             onClick = { =>
               @props.onNewDoor
-                description: @refs.description.getValue()
+                description : @refs.description.getValue()
               @setState dialog: no }
           />
           <FlatButton label="Cancel"

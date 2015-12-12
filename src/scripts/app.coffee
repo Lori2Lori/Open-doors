@@ -41,7 +41,13 @@ class Main extends React.Component
                 database.authWithPassword credentials, (error, authData) =>
                   if error
                     return console.error "Login error", error
-                  @setState user: authData.uid
+                  user = authData.uid
+                  @setState {user}
+
+                  doors
+                    .child user
+                    .on 'value', (snapshot) =>
+                      @setState doors: snapshot.val()
               }
             />
           </div>
@@ -62,7 +68,12 @@ class Main extends React.Component
             <Tab label="Manage doors" >
               <Doors
                 doors = { @state.doors }
-                onNewDoor = { (door) => doors.push door }
+                onNewDoor = { (door) =>
+                  # Create new collection of doors with name equal @state.user (uid)
+                  # Push door object to this new collection
+                  (doors.child @state.user).push door
+                }
+                #TODO: Update deleting doors
                 onClear = { (name) =>
                   doors
                     .child name
@@ -95,10 +106,7 @@ class Main extends React.Component
 
   componentWillMount: ->
 
-    doors.on 'value', (snapshot) =>
-      @setState doors: snapshot.val()
-
-  # Join properties from two arrays: history and doors
+    # Join properties from two arrays: history and doors
     # Request history on every change of its value
     history.on 'value', (snapshot) =>
       # Take a value from history snapshot

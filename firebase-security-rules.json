@@ -1,0 +1,10 @@
+{
+  "rules": {
+    "doors": {
+      ".read": false,
+      "$uid": {
+        ".read": true
+      }
+    }
+  }
+}
