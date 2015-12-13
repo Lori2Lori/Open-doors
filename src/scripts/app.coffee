@@ -81,9 +81,11 @@ class Main extends React.Component
             <Tab label="Open doors" >
               <Open
                 doors = { @state.doors }
-                onNewDoor = { (door) => doors.push door }
                 onDoorOpen = { (event) =>
-                  history.push event }
+                  history
+                    .child @state.user
+                    .push event
+                }
               />
             </Tab>
 
