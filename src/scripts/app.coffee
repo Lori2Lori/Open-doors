@@ -4,7 +4,6 @@ Doors      = require './Doors'
 History    = require './History'
 Open       = require './Open'
 Login      = require './Login'
-Register   = require './Register'
 
 # Material-ui styles
 Dialog     = require 'material-ui/lib/dialog'
@@ -29,21 +28,17 @@ class Main extends React.Component
       {
         if not @state.user?
           <div>
-            <Register
-              onNewUser = { (credentials) =>
+            <h1>Welcome to the Open door test application</h1>
+            <h4>Please log in or register to get started</h4>
+            <Login
+              onLogin = { @login }
+              onRegister = { (credentials) =>
                 database.createUser credentials, (error, userData) =>
                   if error
                     return console.error "Error creating user:", error
+                  @login credentials
 
                   console.log "Successfully created user account with uid:", userData.uid
-              }
-            />
-            <Login
-              onLogin = { (credentials) =>
-                database.authWithPassword credentials, (error, authData) =>
-                  if error
-                    return console.error "Login error", error
-                  @setupUser authData
               }
             />
           </div>
@@ -106,6 +101,12 @@ class Main extends React.Component
 
     @setupUser database.getAuth()
 
+  login: (credentials) =>
+    database.authWithPassword credentials, (error, authData) =>
+      if error
+        return console.error "Login error", error
+      @setupUser authData
+
   setupUser: (authData) ->
     if not authData then return
     user = authData.uid
@@ -131,7 +132,7 @@ class Main extends React.Component
             items = snapshot.val()
             # For each event, take door description and put it into door property of event
             for uid, event of events
-              door = items[event.door]
+              door = items?[event.door]
               event.doorObject = door
             # Set state of history to the current events, with new door property.
             @setState history: events
