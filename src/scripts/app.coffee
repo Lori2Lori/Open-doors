@@ -9,6 +9,7 @@ Register   = require './Register'
 # Material-ui styles
 Dialog     = require 'material-ui/lib/dialog'
 FlatButton = require 'material-ui/lib/flat-button'
+RaisedButton = require 'material-ui/lib/raised-button'
 
 do require 'react-tap-event-plugin'
 Tabs       = require 'material-ui/lib/tabs/tabs'
@@ -48,53 +49,53 @@ class Main extends React.Component
           </div>
         else
 
-          <Dialog
-            title="Please provide correct email and password"
-            open={@state.error}
-            actions = {[
-              <FlatButton label="Close"
-                onClick = { => @setState error: no }
-              />
-            ]}
-          >
-          </Dialog>
+          <div>
+            <Tabs>
+              <Tab label="Manage doors" >
+                <Doors
+                  doors = { @state.doors }
+                  onNewDoor = { (door) =>
+                    # Create new collection of doors with name equal @state.user (uid)
+                    # Push door object to this new collection
+                    (doors.child @state.user).push door
+                  }
+                  onClear = { (name) =>
+                    doors
+                      .child @state.user
+                      .child name
+                      .remove()
+                  }
+                />
 
-          <Tabs>
-            <Tab label="Manage doors" >
-              <Doors
-                doors = { @state.doors }
-                onNewDoor = { (door) =>
-                  # Create new collection of doors with name equal @state.user (uid)
-                  # Push door object to this new collection
-                  (doors.child @state.user).push door
-                }
-                onClear = { (name) =>
-                  doors
-                    .child @state.user
-                    .child name
-                    .remove()
-                }
-              />
+              </Tab>
 
-            </Tab>
+              <Tab label="Open doors" >
+                <Open
+                  doors = { @state.doors }
+                  onDoorOpen = { (event) =>
+                    history
+                      .child @state.user
+                      .push event
+                  }
+                />
+              </Tab>
 
-            <Tab label="Open doors" >
-              <Open
-                doors = { @state.doors }
-                onDoorOpen = { (event) =>
-                  history
-                    .child @state.user
-                    .push event
-                }
-              />
-            </Tab>
+              <Tab label="History" >
+                <History
+                  history = {@state.history}
+                />
+              </Tab>
+            </Tabs>
 
-            <Tab label="History" >
-              <History
-                history = {@state.history}
-              />
-            </Tab>
-          </Tabs>
+            <RaisedButton
+              style={margin: 10}
+              label="Log out"
+              onClick = { =>
+                database.unauth()
+                @setState user: null
+              }
+            />
+          </div>
       }
     </div>
 
@@ -106,6 +107,7 @@ class Main extends React.Component
     @setupUser database.getAuth()
 
   setupUser: (authData) ->
+    if not authData then return
     user = authData.uid
     @setState {user}
 
