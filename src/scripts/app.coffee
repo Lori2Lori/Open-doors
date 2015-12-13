@@ -20,6 +20,7 @@ database   = new Firebase 'https://clay-app.firebaseio.com/'
 doors      = database.child 'doors'
 history    = database.child 'history'
 
+
 class Main extends React.Component
   render: ->
     <div className="app">
@@ -41,13 +42,7 @@ class Main extends React.Component
                 database.authWithPassword credentials, (error, authData) =>
                   if error
                     return console.error "Login error", error
-                  user = authData.uid
-                  @setState {user}
-
-                  doors
-                    .child user
-                    .on 'value', (snapshot) =>
-                      @setState doors: snapshot.val()
+                  @setupUser authData
               }
             />
           </div>
@@ -73,9 +68,9 @@ class Main extends React.Component
                   # Push door object to this new collection
                   (doors.child @state.user).push door
                 }
-                #TODO: Update deleting doors
                 onClear = { (name) =>
                   doors
+                    .child @state.user
                     .child name
                     .remove()
                 }
@@ -106,6 +101,8 @@ class Main extends React.Component
 
   componentWillMount: ->
 
+    @setupUser database.getAuth()
+
     # Join properties from two arrays: history and doors
     # Request history on every change of its value
     history.on 'value', (snapshot) =>
@@ -122,6 +119,15 @@ class Main extends React.Component
         # Set state of history to the current events, with new door property.
         @setState history: events
         #Each door property in event has the description from doors array.
+
+  setupUser: (authData) ->
+    user = authData.uid
+    @setState {user}
+
+    doors
+      .child user
+      .on 'value', (snapshot) =>
+        @setState doors: snapshot.val()
 
 element = React.createElement Main
 RDOM.render element, document.querySelector '.container'
