@@ -105,23 +105,6 @@ class Main extends React.Component
 
     @setupUser database.getAuth()
 
-    # Join properties from two arrays: history and doors
-    # Request history on every change of its value
-    history.on 'value', (snapshot) =>
-      # Take a value from history snapshot
-      events = snapshot.val()
-      # Request for doors once and wait for the answer
-      doors.on 'value', (snapshot) =>
-        # Take value from items snapshot
-        items = snapshot.val()
-        # For each event, take door description and put it into door property of event
-        for uid, event of events
-          door = items[event.door]
-          event.doorObject = door
-        # Set state of history to the current events, with new door property.
-        @setState history: events
-        #Each door property in event has the description from doors array.
-
   setupUser: (authData) ->
     user = authData.uid
     @setState {user}
@@ -130,6 +113,27 @@ class Main extends React.Component
       .child user
       .on 'value', (snapshot) =>
         @setState doors: snapshot.val()
+
+    # Join properties from two arrays: history and doors
+    # Request history on every change of its value
+    history
+      .child user
+      .on 'value', (snapshot) =>
+        # Take a value from history snapshot
+        events = snapshot.val()
+        # Request for doors once and wait for the answer
+        doors
+          .child user
+          .on 'value', (snapshot) =>
+            # Take value from items snapshot
+            items = snapshot.val()
+            # For each event, take door description and put it into door property of event
+            for uid, event of events
+              door = items[event.door]
+              event.doorObject = door
+            # Set state of history to the current events, with new door property.
+            @setState history: events
+            #Each door property in event has the description from doors array.
 
 element = React.createElement Main
 RDOM.render element, document.querySelector '.container'

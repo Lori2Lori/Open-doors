@@ -12,6 +12,7 @@ module.exports = class History extends React.Component
       <List>
         { if @props.history is null
             <h4>
+              You have no history yet
             </h4>
           else
             for key, event of @props.history
