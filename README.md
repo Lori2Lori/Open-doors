@@ -3,7 +3,7 @@
 ## Description
 
 
-The application allows users to create, delete and open doors. There is also the history of opened doors, with exact date and door description.
+The application allows users to log into personal account, create, delete and open doors. There is also the history of opened doors, with exact date and door description.
 
 Application is build with [React.js](https://facebook.github.io/react/)  library and [Material-ui](http://www.material-ui.com/#/) as a front-end framework. [Firebase](https://www.firebase.com/) is used for back-end, the app may be connected with other databases as well.
 
